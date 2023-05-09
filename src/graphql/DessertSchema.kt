@@ -5,9 +5,9 @@ import com.apurebase.kgraphql.schema.dsl.types.InputTypeDSL
 import com.ranggacikal.models.Dessert
 import com.ranggacikal.models.DessertInput
 import repository.DessertRepository
+import services.DessertService
 
-fun SchemaBuilder.dessertSchema() {
-    val repository = DessertRepository()
+fun SchemaBuilder.dessertSchema(dessertService: DessertService) {
 
     inputType<DessertInput> {
         description = "The Input of the dessert without the identifier"
@@ -20,19 +20,9 @@ fun SchemaBuilder.dessertSchema() {
     query("dessert"){
         resolver { dessertId: String ->
             try {
-                repository.getById(dessertId)
+                dessertService.getDessert(dessertId)
             } catch (e: Exception) {
                 null
-            }
-        }
-    }
-
-    query("desserts") {
-        resolver { ->
-            try {
-                repository.getAll()
-            } catch (e: Exception) {
-                emptyList<Dessert>()
             }
         }
     }
@@ -41,10 +31,8 @@ fun SchemaBuilder.dessertSchema() {
         description = "create a new dessert"
         resolver { dessertInput: DessertInput ->
             try {
-                val uid = java.util.UUID.randomUUID().toString()
-                val dessert = Dessert(uid, dessertInput.name, dessertInput.description, dessertInput.imageUrl)
-                repository.add(dessert)
-                dessert
+                val userId = "abc"
+                dessertService.createDessert(dessertInput, userId)
             } catch (e: Exception) {
                 null
             }
@@ -54,9 +42,8 @@ fun SchemaBuilder.dessertSchema() {
     mutation("updateDessert") {
         resolver { dessertId: String, dessertInput: DessertInput ->
             try {
-                val dessert = Dessert(dessertId, dessertInput.name, dessertInput.description, dessertInput.imageUrl)
-                repository.update(dessert)
-                dessert
+               val userId = "abc"
+               dessertService.updateDessert(userId, dessertId, dessertInput)
             } catch (e: Exception) {
                 null
             }
@@ -66,8 +53,8 @@ fun SchemaBuilder.dessertSchema() {
     mutation("deleteDessert") {
         resolver { dessertId: String ->
             try {
-                repository.delete(dessertId)
-                true
+                val userId = "abc"
+                dessertService.deleteDessert(userId, dessertId)
             } catch (e: Exception) {
                 null
             }
