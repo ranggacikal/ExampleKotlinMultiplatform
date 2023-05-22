@@ -1,8 +1,10 @@
 package services
 
+
 import com.mongodb.client.MongoClient
 import com.ranggacikal.models.Dessert
 import com.ranggacikal.models.DessertInput
+import com.ranggacikal.models.DessertsPage
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import repository.DessertRepository
@@ -11,6 +13,10 @@ import java.util.UUID
 class DessertService: KoinComponent {
     private val client: MongoClient by inject()
     private val repo: DessertRepository = DessertRepository(client)
+
+    fun getDessertPage(page: Int, size: Int): DessertsPage {
+        return repo.getDessertPage(page, size)
+    }
 
     fun getDessert(id: String): Dessert {
         return repo.getById(id)

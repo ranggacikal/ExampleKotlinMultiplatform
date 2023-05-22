@@ -27,6 +27,16 @@ fun SchemaBuilder.dessertSchema(dessertService: DessertService) {
         }
     }
 
+    query("desserts"){
+        resolver { page: Int?, size: Int? ->
+            try {
+                dessertService.getDessertPage(page ?: 0, size ?: 10)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
     mutation("createDessert") {
         description = "create a new dessert"
         resolver { dessertInput: DessertInput ->

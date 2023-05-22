@@ -1,6 +1,8 @@
 package com.ranggacikal.plugins
 
 import com.apurebase.kgraphql.GraphQL
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoClients
 import di.mainModule
 import graphql.dessertSchema
 import io.ktor.routing.*
