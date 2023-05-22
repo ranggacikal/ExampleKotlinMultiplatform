@@ -8,18 +8,22 @@ import com.ranggacikal.models.DessertsPage
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import repository.DessertRepository
+import repository.ReviewRepository
 import java.util.UUID
 
 class DessertService: KoinComponent {
     private val client: MongoClient by inject()
     private val repo: DessertRepository = DessertRepository(client)
+    private val reviewRepo: ReviewRepository = ReviewRepository(client)
 
     fun getDessertPage(page: Int, size: Int): DessertsPage {
         return repo.getDessertPage(page, size)
     }
 
     fun getDessert(id: String): Dessert {
-        return repo.getById(id)
+        val dessert = repo.getById(id)
+        dessert.reviews = reviewRepo.getReviewsByDessertId(id)
+        return dessert
     }
 
     fun createDessert(dessertInput: DessertInput, userId: String): Dessert {
